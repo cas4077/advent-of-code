@@ -11,6 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(here)
 library(dplyr)
 library(RcppRoll)
+library(RcppAlgos)
 ```
 
 ## R Markdown
@@ -62,18 +63,18 @@ print(paste0("The answer to the first puzzle of Advent of Code 2020 Day 1 is: ",
 
 ```{r Part2}
 
-test2 <- as.integer(c(1721, 979, 366, 299, 675, 1456))
+poss.combos <- data.frame(comboGeneral(input, 3))
+poss.combos$sums <- rowSums(poss.combos)
 
-poss.combos <- comboGeneral(input, 3)
-sums <- rowSums(poss.combos)
+prod.three <- prod(poss.combos[which(poss.combos$sums == 2020),1],
+                   poss.combos[which(poss.combos$sums == 2020),2],
+                   poss.combos[which(poss.combos$sums == 2020),3])
 
-final.mat <- cbind(poss.combos, sums)
-View(final.mat)
 
-special.row <- which(final.mat[, 4] == 2020)
-nums <- final.mat[special.row, ]
-
-P2 <- prod(nums[1], nums[2], nums[3])
-
+print(paste0("The three entries that sum to 2020 are: ",
+             poss.combos[which(poss.combos$sums == 2020),1], ", ",
+             poss.combos[which(poss.combos$sums == 2020),2], " and ",
+             poss.combos[which(poss.combos$sums == 2020),3], ". Their product is ",
+             prod.three))
 
 ```
