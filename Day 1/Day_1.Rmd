@@ -1,0 +1,79 @@
+---
+title: "Advent of Code - Day 1"
+author: "Clara A. Stafford"
+date: "12/14/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(here)
+library(dplyr)
+library(RcppRoll)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r import data}
+input <- read.delim(here("Day 1", "input.txt"), header = FALSE)
+
+
+#easy first solution
+input$c <- RcppRoll::roll_sum(input$V1,2, fill = NA)
+which(input$c == 2020)
+
+```
+
+```{r loop}
+
+input <- as.integer(readLines(here::here("Day 1", "input.txt")))
+
+i <- 1
+j <- 2
+target <- 2020
+
+
+while (i <= length(input)) {
+  if (j <= length(input) && sum(input[i], input[j]) != target) {
+    j = j+1
+  } else if (j > length(input)) {
+    i = i+1
+    j = i+1
+    print(paste0("Starting new round with: ", input[i]))
+  } else if (j <= length(input) && sum(input[i], input[j]) == target){
+    print(paste0("You did it! The two numbers that sum to ", target, " are ", input[i], " and ", input[j]))
+    break
+  }
+}
+
+```
+
+```{r P1.answer}
+# Find the two entries that sum to 2020; what do you get if you multiply them together?
+
+print(paste0("The answer to the first puzzle of Advent of Code 2020 Day 1 is: ", input[i]*input[j]))
+
+```
+
+```{r Part2}
+
+test2 <- as.integer(c(1721, 979, 366, 299, 675, 1456))
+
+poss.combos <- comboGeneral(input, 3)
+sums <- rowSums(poss.combos)
+
+final.mat <- cbind(poss.combos, sums)
+View(final.mat)
+
+special.row <- which(final.mat[, 4] == 2020)
+nums <- final.mat[special.row, ]
+
+P2 <- prod(nums[1], nums[2], nums[3])
+
+
+```

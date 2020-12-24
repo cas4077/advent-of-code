@@ -1,0 +1,52 @@
+---
+title: "Advent of Code - Day 2"
+author: "Clara A. Stafford"
+date: "12/15/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(here)
+library(dplyr)
+library(stringr)
+library(tidyr)
+library(purrr)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r import and clean}
+input <- data.frame(orig = readLines(here("Day 2", "passwords.txt")))
+passwords <- input %>% separate(orig, c("min", "max", "target", "password"), sep = '[- ]|\\: ')
+
+passwords$min <- as.integer(passwords$min)
+passwords$max <- as.integer(passwords$max)
+
+```
+
+```{r analyzing}
+# testing on smaller df for time and visualization
+
+passwords$count <- str_count(passwords$password, pattern = passwords$target)
+
+
+correct <- passwords %>% dplyr::filter(count >= min & count <= max)
+incorrect <- passwords %>% dplyr::filter(count < min | count > max)
+
+```
+
+```{r Part deux}
+
+passwords$locations.min <- substr(passwords$password, passwords$min, passwords$min)
+passwords$locations.max <- substr(passwords$password, passwords$max, passwords$max)
+
+summ <- sum(xor(passwords$locations.min == passwords$target, passwords$locations.max == passwords$target))
+
+print(paste0("The number of correct passwords according to the new employer is: ", summ))
+
+```

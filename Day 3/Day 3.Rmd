@@ -1,0 +1,50 @@
+---
+title: "Advent fo Code - Day 3"
+author: "Clara A. Stafford"
+date: "12/15/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(here)
+library(dplyr)
+library(readr)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r import}
+input03 <- readLines(here("Day 3", "grid.expanded.txt"))
+
+positions <- (3 * (seq_along(input03) - 1)) %% nchar(input03) + 1
+
+sum(substr(input03, positions, positions) == '#')
+
+```
+```{r 3across1down}
+
+positions <- (3 * (seq_along(input03) - 1)) %% nchar(input03) + 1
+
+sum(substr(input03, positions, positions) == '#')
+
+```
+
+```{r PartDeux}
+
+trees <- function(right, down = 1) {
+  vertical <- seq(0, length(input03) - 1, by = down) + 1
+  horizontal <- (right * (seq_along(input03) - 1)) %% nchar(input03) + 1
+  horizontal <- head(horizontal, length(vertical))
+  as.double(
+    sum(substr(input03[vertical], horizontal, horizontal) == '#')
+  )
+}
+trees(1) * trees(3) * trees(5) * trees(7) * trees(1, 2)
+
+```
+
